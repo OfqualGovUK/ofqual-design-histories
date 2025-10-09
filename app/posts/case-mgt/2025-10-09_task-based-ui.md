@@ -7,10 +7,10 @@
         items:
           - text: Prototype
             href: https://case-mgt-2ece7938ecbf.herokuapp.com/
-          - text: Content
-            href: https://c
-          - text: Content
-            href: https://c
+          - text: GOV.UK Design System - Help users to complete multiple tasks
+            href: https://design-system.service.gov.uk/patterns/complete-multiple-tasks/
+          - text: Carbon design system - Contained list component
+            href: https://carbondesignsystem.com/components/contained-list/usage/
 ---
 
 ## Context
