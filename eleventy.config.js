@@ -36,6 +36,10 @@ module.exports = function (eleventyConfig) {
     return collection.getFilteredByGlob('app/posts/recognition/*.md')
   })
 
+  eleventyConfig.addCollection('casemgt', collection => {
+    return collection.getFilteredByGlob('app/posts/case-mgt/*.md')
+  })
+
   // On site build, create any missing image folders that are needed
   eleventyConfig.on('eleventy.after', async ({ dir, results, runMode, outputMode }) => {
     // Create image folder if needed
