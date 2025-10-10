@@ -5,10 +5,6 @@
     sections:
       - title: Related content
         items:
-          - text: Prototype
-            href: https://case-mgt-2ece7938ecbf.herokuapp.com/
-          - text: Case list version 1 prototype
-            href: https://case-mgt-2ece7938ecbf.herokuapp.com/cases
           - text: Carbon design system - Filtering pattern
             href: https://www.carbondesignsystem.com/patterns/filtering
           - text: Carbon design system - Filterable multi-select component

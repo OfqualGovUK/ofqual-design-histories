@@ -5,8 +5,6 @@
     sections:
       - title: Related content
         items:
-          - text: Prototype
-            href: https://case-mgt-2ece7938ecbf.herokuapp.com/
           - text: GOV.UK Design System - Help users to complete multiple tasks
             href: https://design-system.service.gov.uk/patterns/complete-multiple-tasks/
           - text: Carbon design system - Contained list component
