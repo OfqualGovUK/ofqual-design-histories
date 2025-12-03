@@ -1,0 +1,170 @@
+import { govukEleventyPlugin } from "@x-govuk/govuk-eleventy-plugin";
+import {DateTime} from "luxon";
+import { pathToFileURL } from 'url';
+import childProcess from "child_process";
+import path from "path";
+import fs from "fs";
+import dlAsSummaryList from "./lib/markdown/dl-as-govuk-summary-list.js";
+
+function injectGitSha(eleventyConfig, gitHubRepositoryUrl) {
+    let latestGitCommitHash = process.env.GITHUB_COMMIT_SHA;
+
+    if(!latestGitCommitHash) {
+        try {
+            latestGitCommitHash = childProcess.execSync('git rev-parse HEAD').toString().trim();
+        } catch (e) {
+            console.warn("Unable to determine current Git commit hash. Permalinks will not be generated.")
+            return;
+        }
+    }
+
+    eleventyConfig.addGlobalData(
+        'gitHashPath',
+        gitHubRepositoryUrl + '/blob/' + latestGitCommitHash + '/docs'
+    );
+}
+
+export default async function(eleventyConfig) {
+    const _siteRoot = process.env.SITE_ROOT ?? 'http://localhost:8080/';
+    const gitHubRepositoryUrl = "https://github.com/OfqualGovUK/ofqual-standards-patterns";
+
+    // Pass assets through to final build directory
+    eleventyConfig.addPassthroughCopy({ "docs/assets/logos": "assets/logos"});
+    eleventyConfig.addPassthroughCopy({ "docs/assets/images": "assets/images"});
+    eleventyConfig.addPassthroughCopy({ "docs/assets/images": "."});
+
+    // Register the plugins
+    let govukPluginOptions = {
+        opengraphImageUrl: '/assets/logos/govuk-opengraph-image.png',
+        homeKey: 'Home',
+        header: {
+            logotype: {
+                html:
+                    '<span class="govuk-header__logotype">' +
+                    '  <img src="/assets/logos/OfqualLogoWhite.svg" height="64px" alt="Ofqual Logo">' +
+                    '  <img class="hide" src="/assets/logos/OfqualLogoBlack.svg" height="64px" alt="Ofqual Logo">' +
+                    '</span>'
+            },
+            productName: 'Ofqual Design Histories',
+            search: {
+                label: 'Search site',
+                indexPath: '/search-index.json',
+                sitemapPath: '/sitemap/'
+            }
+        },
+        footer: {
+            copyright: {
+                html: '<a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">©&nbsp;Crown copyright</a>'
+            },
+            meta: {
+                items: [
+                    {
+                        href: '/about/',
+                        text: 'About'
+                    },
+                    {
+                        href: '/cookies/',
+                        text: 'Cookies'
+                    },
+                    {
+                        href: '/accessibility-statement/',
+                        text: 'Accessibility'
+                    },
+                    {
+                        href: gitHubRepositoryUrl,
+                        text: 'GitHub repository'
+                    }
+                ]
+            }
+        },
+        stylesheets: ['/styles/base.css'],
+        templates: {
+            searchIndex: true,
+        }
+    };
+    eleventyConfig.addPlugin(govukEleventyPlugin, govukPluginOptions)
+
+    // Customise markdown-it renderer provided by x-gov 11ty plugin. Plugin execution is
+    // deferred, so this needs to be a plugin, and added after the x-gov plugin is.
+    eleventyConfig.addPlugin((eleventyConfig) => {
+        eleventyConfig.amendLibrary('md', md => md.use(dlAsSummaryList));
+    });
+
+    eleventyConfig.addFilter("postDate", (dateObj) => {
+        return DateTime.fromJSDate(dateObj).toFormat('d MMMM yyyy');
+    });
+
+    // Used for tag page generation
+    eleventyConfig.addFilter("getAllTags", collection => {
+      let tagSet = new Set();
+      for(let item of collection) {
+          (item.data.tags || []).forEach(tag => tagSet.add(tag));
+      }
+      return Array.from(tagSet).sort(function(a, b) {
+        return a.localeCompare(b); // sort by tag name
+      });
+    });
+
+    eleventyConfig.addFilter("filterTagList", function filterTagList(tags) {
+        // Tags in array are ignored, no tag list page is generated for these
+        return (tags || []).filter(tag => ["homepage"].indexOf(tag) === -1);
+    });
+
+    eleventyConfig.addFilter("orderPagesByTitle", function orderByTitle(collection) {
+      return collection.sort(function(a, b) {
+        return a.data.title.localeCompare(b.data.title); // sort by title ascending
+      });
+    });
+
+    await Promise.all(
+    fs.readdirSync(path.join(process.cwd(), 'lib', 'filters'))
+        .map(file => path.parse(file))
+        .filter(({ ext }) => ext === '.js')
+        .map(async ({ name, base }) =>
+        eleventyConfig.addFilter(
+            name,
+            (await import(pathToFileURL(path.join(process.cwd(), 'lib', 'filters', base)).href)).default
+        )
+        )
+    );
+
+    eleventyConfig.addCollection("register", function(collectionApi) {
+      return collectionApi.getFilteredByGlob("**/register/*.md").sort(function(a, b) {
+          return a.data.title.localeCompare(b.data.title); // sort by title ascending
+        });
+    });
+
+    eleventyConfig.addCollection("sms", function(collectionApi) {
+      return collectionApi.getFilteredByGlob("**/sms/*.md").sort(function(a, b) {
+        return a.data.title.localeCompare(b.data.title); // sort by title ascending
+      });
+    });
+
+    eleventyConfig.addCollection("recognition", function(collectionApi) {
+      return collectionApi.getFilteredByGlob("**/recognition/*.md").sort(function(a, b) {
+        return a.data.title.localeCompare(b.data.title); // sort by title ascending
+      });
+    });
+
+    eleventyConfig.addCollection("case-mgt", function(collectionApi) {
+      return collectionApi.getFilteredByGlob("**/case-mgt/*.md").sort(function(a, b) {
+        return a.data.title.localeCompare(b.data.title); // sort by title ascending
+      });
+    });
+
+    eleventyConfig.addGlobalData('siteRoot', _siteRoot);
+
+    injectGitSha(eleventyConfig, gitHubRepositoryUrl);
+
+    return {
+        dataTemplateEngine: 'njk',
+        htmlTemplateEngine: 'njk',
+        markdownTemplateEngine: 'njk',
+        dir: {
+            data: '../_data',
+            layouts: '../_includes/layouts',
+            includes: '../_includes',
+            input: 'docs'
+        }
+    }
+};
