@@ -1,35 +1,58 @@
-# Design history for GOV.UK services
 
-A place for you to document your GOV.UK service designs.
+# Ofqual design histories
+ 
+This is the home of design histories for Ofqual Digital and Data. 
 
-## Purpose of this project
+It is built using Markdown, GOV.UK templates, Ofqual styles, the [x-gov Eleventy Plugin](https://x-govuk.github.io/govuk-eleventy-plugin/) and GitHub Actions.
 
-This repository makes it easy to:
+## Requirements
 
-* screenshot your designs
-* create pages of screenshots to document designs
-* document designs using the [GOV.UK Design System](https://design-system.service.gov.uk/)
-* print pages of designs
-* make designs shareable and linkable
+- [Node.js](https://nodejs.org)
+- [Eleventy](https://www.11ty.dev)
+- [x-gov Eleventy Plugin](https://x-govuk.github.io/govuk-eleventy-plugin/)
+- [Nunjucks](https://mozilla.github.io/nunjucks/) for the templating language
 
-## Installation and getting started
+## Installation
 
-Read our guide on how to [set up a design history](https://x-govuk.github.io/govuk-design-history/get-started/).
+```
+git clone https://github.com/OfqualGovUK/ofqual-design-histories.git
+cd ofqual-design-histories
+npm install
+```
 
-Install node packages with:
+This will copy the code repository to your local machine and install the dependencies needed to run the site.
 
-`npm install`
+## Preview your changes locally
 
-Start the service with:
+Eleventy has the ability to serve the site in a hot reload environment.  You can call this from the npm scripts:
 
-`npx eleventy --serve`
+```
+npm run serve
+```
 
-## Support
+You can then [view the site on your local machine](http://localhost:8080).
 
-This project is maintained by a small number of volunteers working across government.
+### Alternative method for previewing changes locally
 
-For questions about using a design history for your service, bug reports or feedback, [submit a new issue](https://github.com/x-govuk/govuk-design-history-template/issues/new).
+Alternatively, to run the site locally you can build the static html files and then deploy the _site folder to a http server.
 
-## Technical notes
+Firstly you can run
 
-The design history uses the [GOV.UK Design System](https://design-system.service.gov.uk) and the [Eleventy](https://www.11ty.dev) static site generator with the [GOV.UK Eleventy Plugin](https://x-govuk.github.io/govuk-eleventy-plugin/).
+```
+npm run build
+```
+
+Which creates the static html. Then you can use a good very light weight http server to host them.
+
+```
+npm install -g http-server
+```
+
+Installs the server globally and then navigate to a terminal/cmd prompt to the _site directory and run: 
+
+```
+http-server -p 8080
+```
+
+Now you can preview the site on http://localhost:8080
+
