@@ -19,6 +19,21 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.20.4'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Diagnostics
+        run: |
+          node --version
+          npm --version
+          npm list @11ty/eleventy
+          npm list @x-govuk/govuk-eleventy-plugin          
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
