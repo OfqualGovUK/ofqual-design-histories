@@ -1,8 +1,13 @@
-@import "govuk-frontend/dist/govuk/base";
-@import "../_components/all";
+// Use GOV.UK Frontend components
+@use "pkg:govuk-frontend/dist/govuk";
 
-.x-govuk-masthead {
-  margin-top: -10px;
-  width: 100%;
-  box-sizing: border-box;
+// Use GOV.UK Eleventy Plugin components
+@use "pkg:@x-govuk/govuk-eleventy-plugin";
+
+// App components
+@forward "../_components/";
+
+// Ensure search result text uses the default GOV.UK text colour
+.app-search__menu {
+    color: #0b0c0c;
 }

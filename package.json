@@ -9,26 +9,25 @@
   ],
   "license": "MIT",
   "scripts": {
-    "prebuild": "rimraf public",
     "build": "eleventy",
+    "prestart": "npm run build",
     "start": "eleventy --serve --quiet",
     "preserve": "npm run build",
-    "serve": "http-server",
+    "serve": "http-server ./_site",
     "test": "standard"
   },
   "dependencies": {
-    "@11ty/eleventy": "^2.0.1",
-    "@x-govuk/govuk-eleventy-plugin": "^6.4.1",
-    "http-server": "^14.1.1",
-    "rimraf": "^6.0.1",
-    "sass": "^1.77.8"
+    "@11ty/eleventy": "3.1.6",
+    "@x-govuk/govuk-eleventy-plugin": "9.0.2",
+    "http-server": "14.1.1"
   },
   "devDependencies": {
-    "standard": "^17.1.0",
-    "webshot-node": "^0.18.2"
+    "standard": "17.1.2",
+    "webshot-node": "0.18.3"
   },
   "private": true,
   "engines": {
-    "node": ">=18"
-  }
+    "node": ">=22"
+  },
+  "type": "module"
 }

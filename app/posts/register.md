@@ -2,6 +2,7 @@
    layout: collection
    title: Register
    description: Design history for the Find a Regulated Qualification service
+   excludeFromSearch: true
    pagination:
      data: collections.register
      reverse: true
