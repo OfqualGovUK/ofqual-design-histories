@@ -2,6 +2,7 @@
    layout: collection
    title: Subject Matter Specialists
    description: Design history for the Subject Matter Specialists service
+   excludeFromSearch: true
    pagination:
      data: collections.sms
      reverse: true

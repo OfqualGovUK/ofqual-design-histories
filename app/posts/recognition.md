@@ -2,6 +2,7 @@
    layout: collection
    title: Recognition
    description: Design history for the Apply to have your qualifications regulated service
+   excludeFromSearch: true
    pagination:
      data: collections.recognition
      reverse: true

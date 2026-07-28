@@ -2,6 +2,7 @@
    layout: collection
    title: Case management
    description: Design history for case management internal facing product
+   excludeFromSearch: true
    pagination:
      data: collections.casemgt
      reverse: true
